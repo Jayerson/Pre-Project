@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="contact.css">
+    <title>Jay's Martian Cafe</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="book.html">Book</a></li>
+        <li><a href="bookings.html">View Booking Availability</a></li>
+      </ul>
+    </nav>
+    <header>
+      <h1>Contact Us - Jay's Martian Cafe</h1>
+      <p>Best Coffee on Mars</p>
+    </header>
+    <br>
+    <main>
+      <form class="contact-form" onsubmit="return submitMessage(event);">
+
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" required>
+
+        <label for="fname">Full Name</label>
+        <input type="text" name="fname" id="fname">
+
+        <label for="reason">Feedback Type</label>
+        <select name="reason" id="reason">
+          <option value="review">Review</option>
+          <option value="complaint">Complaint</option>
+          <option value="event">Book Event</option>
+        </select>
+
+        <label for="comment">Comment</label>
+        <textarea name="comment" id="comment" rows="3" cols="20" required>Leave your comment here</textarea>
+
+        <button>Clear</button>
+        <input type="submit">
+      </form>
+    </main>
+    
+    <footer>
+      <div class="form-title-section">
+        <h3> Contact Messages</h3>
+        <button onclick="deleteMessages();">Clear Messages</button>
+      </div>
+      <div class="form-wrapper">
+        <dl id="currentMessages">
+
+        </dl>
+      </div>
+
+    </footer>
+
+    <script>
+      function deleteMessages() {
+        if (window.sessionStorage.getItem("messages")) {
+          window.sessionStorage.removeItem("messages");
+        }
+        renderMessages();
+      }
+
+      function submitMessage(event) {
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        const fname = document.getElementById("fname").value;
+        const reason = document.getElementById("reason").value;
+        const comment = document.getElementById("comment").value;
+
+        const messageObject = { email, fname, reason, comment };
+
+        let currentMessages = [];
+        if (window.sessionStorage.getItem("messages")) {
+          currentMessages = JSON.parse(window.sessionStorage.getItem("messages"));
+        }
+        currentMessages.push(messageObject);
+        window.sessionStorage.setItem("messages", JSON.stringify(currentMessages));
+        renderMessages();
+      }
+
+      function renderMessages() {
+        let currentMessages = [];
+        if (window.sessionStorage.getItem("messages")) {
+          currentMessages = JSON.parse(window.sessionStorage.getItem("messages"));
+        }
+        let listItems = [];
+        for (let i = 0; i < currentMessages.length; i++) {
+          let listItem = "";
+          const currentMessage = currentMessages[i];
+          listItem += `<dt>${currentMessage.fname} - ${currentMessage.email}</dt>`;
+          listItem += `<dd>${currentMessage.reason}: ${currentMessage.comment}</dd>`;
+          listItem += `<br />`;
+          listItems.push(listItem);
+        }
+        let descList = document.getElementById('currentMessages');
+        descList.innerHTML = listItems.join('');
+      }
+    </script>
+
+  </body>
+</html>
